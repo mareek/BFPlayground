@@ -4,6 +4,6 @@
         Title="MainWindow" Height="350" Width="525">
     <DockPanel>
         <Button x:Name="GoButton" DockPanel.Dock="Bottom" Click="GoButton_Click">Go!</Button>
-        <TextBox x:Name="CodeTextBox"/>
+        <TextBox x:Name="CodeTextBox" AcceptsReturn="True"/>
     </DockPanel>
 </Window>
