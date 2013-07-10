@@ -19,22 +19,64 @@ namespace BFPlayground
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BrainFuckInterpreter _interpreter;
         public MainWindow()
         {
             InitializeComponent();
             this.CodeTextBox.Text = "[-]>[-]<>+++++++[<+++++++>-]<+++.--.";
         }
 
-        private void GoButton_Click(object sender, RoutedEventArgs e)
+        private void InitInterpreter()
         {
-            var interpreter = new BrainFuckInterpreter(this.CodeTextBox.Text);
+            if (_interpreter == null 
+                || _interpreter.EndOfProgram
+                || _interpreter.Program != this.CodeTextBox.Text)
+            {
+                _interpreter = new BrainFuckInterpreter(this.CodeTextBox.Text);
+                this.OutputTextBox.Clear();
+            }
+        }
+
+        private void RunButton_Click(object sender, RoutedEventArgs e)
+        {
+            InitInterpreter();
             try
             {
-                MessageBox.Show(this, interpreter.Run(), "Output");
+                _interpreter.Run();
+                ShowResults();
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show(this, "ERROR", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Step_Click(object sender, RoutedEventArgs e)
+        {
+            InitInterpreter();
+            try
+            {
+                _interpreter.Step();
+                ShowResults();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ShowResults()
+        {
+            this.OutputTextBox.Text = _interpreter.Output;
+            
+            this.DataListBox.ItemsSource = _interpreter.Data;
+            this.DataListBox.SelectedIndex = _interpreter.DataPointer;
+
+            if (!_interpreter.EndOfProgram)
+            {
+                this.CodeTextBox.SelectionStart = _interpreter.ProgramPointer;
+                this.CodeTextBox.SelectionLength = 1;
+                this.CodeTextBox.Focus();
             }
         }
     }

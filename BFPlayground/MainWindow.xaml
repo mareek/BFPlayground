@@ -1,9 +1,54 @@
 ﻿<Window x:Class="BFPlayground.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <DockPanel>
-        <Button x:Name="GoButton" DockPanel.Dock="Bottom" Click="GoButton_Click">Go!</Button>
-        <TextBox x:Name="CodeTextBox" AcceptsReturn="True"/>
-    </DockPanel>
+        Title="Brainfuck" Height="350" Width="525" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Margin="3">
+            <Label DockPanel.Dock="Top">Program :</Label>
+            <TextBox x:Name="CodeTextBox" AcceptsReturn="True"/>
+        </DockPanel>
+        <StackPanel Grid.Row="1" Margin="3">
+            <Label>Data :</Label>
+            <ListBox x:Name="DataListBox">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" BorderThickness="1" Padding="2" Width="26" >
+                            <TextBlock Text="{Binding}" HorizontalAlignment="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </StackPanel>
+        <StackPanel  Grid.Row="2" Margin="3">
+            <Label>Output :</Label>
+            <TextBox x:Name="OutputTextBox" AcceptsReturn="True" IsReadOnly="True"/>
+        </StackPanel>
+        <UniformGrid Grid.Row="3" Rows="1">
+            <Button x:Name="RunButton" Click="RunButton_Click" Margin="3">Run</Button>
+            <Button x:Name="Step" Click="Step_Click" Margin="3">Step</Button>
+        </UniformGrid>
+    </Grid>
 </Window>
