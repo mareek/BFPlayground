@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BFPlayground
 {
-    class BrainFuckInterpreter
+    class Interpreter
     {
         private const string instructions = "<>+-[].,";
 
@@ -31,7 +31,7 @@ namespace BFPlayground
 
         int _lastOpeningBracket = -1;
 
-        public BrainFuckInterpreter(string program)
+        public Interpreter(string program)
         {
             _program = program;
         }

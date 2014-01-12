@@ -19,7 +19,7 @@ namespace BFPlayground
     /// </summary>
     public partial class MainWindow : Window
     {
-        private BrainFuckInterpreter _interpreter;
+        private Interpreter _interpreter;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,7 +32,7 @@ namespace BFPlayground
                 || _interpreter.EndOfProgram
                 || _interpreter.Program != this.CodeTextBox.Text)
             {
-                _interpreter = new BrainFuckInterpreter(this.CodeTextBox.Text);
+                _interpreter = new Interpreter(this.CodeTextBox.Text);
                 this.OutputTextBox.Clear();
             }
         }
