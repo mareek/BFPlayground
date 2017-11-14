@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BFPlayground
 {
@@ -23,17 +13,17 @@ namespace BFPlayground
         public MainWindow()
         {
             InitializeComponent();
-            this.CodeTextBox.Text = "[-]>[-]<>+++++++[<+++++++>-]<+++.--.";
+            CodeTextBox.Text = "[-]>[-]<>+++++++[<+++++++>-]<+++.--.";
         }
 
         private void InitInterpreter()
         {
-            if (_interpreter == null 
+            if (_interpreter == null
                 || _interpreter.EndOfProgram
-                || _interpreter.Program != this.CodeTextBox.Text)
+                || _interpreter.Program != CodeTextBox.Text)
             {
-                _interpreter = new Interpreter(this.CodeTextBox.Text);
-                this.OutputTextBox.Clear();
+                _interpreter = new Interpreter(CodeTextBox.Text);
+                OutputTextBox.Clear();
             }
         }
 
@@ -45,7 +35,7 @@ namespace BFPlayground
                 _interpreter.Run();
                 ShowResults();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -67,16 +57,16 @@ namespace BFPlayground
 
         private void ShowResults()
         {
-            this.OutputTextBox.Text = _interpreter.Output;
-            
-            this.DataListBox.ItemsSource = _interpreter.Data;
-            this.DataListBox.SelectedIndex = _interpreter.DataPointer;
+            const int maxDataDisplayed = 500;
+            OutputTextBox.Text = _interpreter.Output;
+            DataListBox.ItemsSource = _interpreter.Data.Take(maxDataDisplayed);
+            DataListBox.SelectedIndex = _interpreter.DataPointer > maxDataDisplayed ? -1 : _interpreter.DataPointer;
 
             if (!_interpreter.EndOfProgram)
             {
-                this.CodeTextBox.SelectionStart = _interpreter.ProgramPointer;
-                this.CodeTextBox.SelectionLength = 1;
-                this.CodeTextBox.Focus();
+                CodeTextBox.SelectionStart = _interpreter.ProgramPointer;
+                CodeTextBox.SelectionLength = 1;
+                CodeTextBox.Focus();
             }
         }
     }
