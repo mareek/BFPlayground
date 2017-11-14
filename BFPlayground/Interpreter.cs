@@ -30,6 +30,8 @@ namespace BFPlayground
 
         public Interpreter(string program)
         {
+            CheckProgram(program);
+
             Program = program;
             var tempCode = new List<char>();
             var tempTranslationTable = new List<int>();
@@ -44,6 +46,33 @@ namespace BFPlayground
             _code = tempCode.ToArray();
             _translationTable = tempTranslationTable.ToArray();
             _output = new List<byte>();
+        }
+
+        private void CheckProgram(string program)
+        {
+            var openingBracketCount = 0;
+            foreach (var instruction in program)
+            {
+                switch (instruction)
+                {
+                    case '[':
+                        openingBracketCount++;
+                        break;
+                    case ']':
+                        openingBracketCount--;
+                        break;
+                }
+
+                if (openingBracketCount < 0)
+                {
+                    throw new Exception("Unexpected closing bracket");
+                }
+            }
+
+            if (openingBracketCount > 0)
+            {
+                throw new Exception("Unclosed bracket");
+            }
         }
 
         public string Run()

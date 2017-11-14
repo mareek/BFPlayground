@@ -12,6 +12,16 @@ namespace BFPlaygroundTest
     public class InterpreterTest
     {
         [Fact]
+        public void IncorrectProgramsTest()
+        {
+            const string programWithMismatchingBracketNumber = "[[-]";
+            Check.ThatCode(() => new Interpreter(programWithMismatchingBracketNumber)).ThrowsAny();
+
+            const string programWithMismatchingBrackets = "]-[";
+            Check.ThatCode(() => new Interpreter(programWithMismatchingBrackets)).ThrowsAny();
+        }
+
+        [Fact]
         public void Test42()
         {
             const string program = "[-]>[-]<>+++++++[<+++++++>-]<+++.--.";
