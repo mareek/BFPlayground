@@ -23,10 +23,10 @@ namespace BFPlayground
 
         public int DataPointer { get; private set; } = 0;
 
-        List<byte> _output;
+        private readonly List<byte> _output = new List<byte>();
         public string Output => new string(Encoding.UTF8.GetChars(_output.ToArray()));
 
-        int _lastOpeningBracket = -1;
+        private readonly Stack<int> _lastOpeningBrackets = new Stack<int>();
 
         public Interpreter(string program)
         {
@@ -145,25 +145,32 @@ namespace BFPlayground
 
         private void ProcessOpeningBracket()
         {
-            _lastOpeningBracket = _codePointer;
-            if (_data[DataPointer] == 0)
+            if (_data[DataPointer] != 0)
             {
-                while (_codePointer < _code.Length && _code[_codePointer] != ']')
-                    _codePointer++;
+                _lastOpeningBrackets.Push(_codePointer);
+            }
+            else
+            {
+                var innerLoopCount = 0;
+                _codePointer++;
+                while (_code[_codePointer] != ']' || innerLoopCount > 0)
+                {
+                    if (_code[_codePointer] == ']')
+                        innerLoopCount--;
+                    else if (_code[_codePointer] == '[')
+                        innerLoopCount++;
 
-                if (_codePointer == _code.Length)
-                    throw new ApplicationException("No matching closing bracket");
+                    _codePointer++;
+                }
             }
         }
 
         private void ProcessClosingBracket()
         {
-            if (_data[DataPointer] == 0)
-            { /*Do nothing*/ }
-            else if (_lastOpeningBracket >= 0)
-                _codePointer = _lastOpeningBracket;
+            if (_data[DataPointer] != 0)
+                _codePointer = _lastOpeningBrackets.Peek();
             else
-                throw new ApplicationException("No matching opening bracket");
+                _lastOpeningBrackets.Pop();
         }
 
         private void GetInput()

@@ -14,8 +14,8 @@ namespace BFPlaygroundTest
         [Fact]
         public void IncorrectProgramsTest()
         {
-            const string programWithMismatchingBracketNumber = "[[-]";
-            Check.ThatCode(() => new Interpreter(programWithMismatchingBracketNumber)).ThrowsAny();
+            const string programWithUnclosedBracket = "[[-]";
+            Check.ThatCode(() => new Interpreter(programWithUnclosedBracket)).ThrowsAny();
 
             const string programWithMismatchingBrackets = "]-[";
             Check.ThatCode(() => new Interpreter(programWithMismatchingBrackets)).ThrowsAny();
@@ -33,6 +33,19 @@ namespace BFPlaygroundTest
             Check.That(interpreter.Data[0]).IsEqualTo(50);
             Check.That(interpreter.Data[1]).IsEqualTo(0);
             Check.That(interpreter.DataPointer).IsEqualTo(0);
+        }
+
+        [Fact]
+        public void TestInnerLoop()
+        {
+            const string program =
+@"[-]>[-]< initialise les 2 premières cellules mémoire à 0 (en cas de mémoire non initialisée)
+>+++++++[<+++++++>-]< initialise la première cellule mémoire au caractère ASCII '1'
+>>+++[<<.+>>-<+[-]>]";
+            const string expectedOutput = "123";
+            var interpreter = new Interpreter(program);
+            interpreter.Run();
+            Assert.Equal(expectedOutput, interpreter.Output);
         }
     }
 }
