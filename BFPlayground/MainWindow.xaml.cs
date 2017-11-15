@@ -69,5 +69,10 @@ namespace BFPlayground
                 CodeTextBox.Focus();
             }
         }
+
+        private void Generate_Click(object sender, RoutedEventArgs e)
+        {
+            CodeTextBox.Text = new Fuzzier().GenerateProgramWithOuput();
+        }
     }
 }

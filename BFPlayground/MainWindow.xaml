@@ -47,8 +47,9 @@
             <TextBox x:Name="OutputTextBox" AcceptsReturn="True" IsReadOnly="True"/>
         </StackPanel>
         <UniformGrid Grid.Row="3" Rows="1">
-            <Button x:Name="RunButton" Click="RunButton_Click" Margin="3">Run</Button>
-            <Button x:Name="Step" Click="Step_Click" Margin="3">Step</Button>
+            <Button Name="RunButton" Click="RunButton_Click" Margin="3">Run</Button>
+            <Button Name="Step" Click="Step_Click" Margin="3">Step</Button>
+            <Button Name="Generate" Click="Generate_Click" Margin="3">Generate</Button>
         </UniformGrid>
     </Grid>
 </Window>

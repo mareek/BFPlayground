@@ -48,30 +48,38 @@ namespace BFPlayground
             _output = new List<byte>();
         }
 
-        private void CheckProgram(string program)
+        private static void CheckProgram(string program)
         {
-            var openingBracketCount = 0;
+            var unclosedLoopCount = 0;
             foreach (var instruction in program)
             {
-                switch (instruction)
-                {
-                    case '[':
-                        openingBracketCount++;
-                        break;
-                    case ']':
-                        openingBracketCount--;
-                        break;
-                }
+                if (instruction == '[')
+                    unclosedLoopCount++;
+                else if (instruction == ']')
+                    unclosedLoopCount--;
 
-                if (openingBracketCount < 0)
+                if (unclosedLoopCount < 0)
                 {
                     throw new Exception("Unexpected closing bracket");
                 }
             }
 
-            if (openingBracketCount > 0)
+            if (unclosedLoopCount > 0)
             {
                 throw new Exception("Unclosed bracket");
+            }
+        }
+
+        public static bool IsProgramValid(string program)
+        {
+            try
+            {
+                CheckProgram(program);
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
