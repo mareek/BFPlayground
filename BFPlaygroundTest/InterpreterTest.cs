@@ -47,5 +47,18 @@ namespace BFPlaygroundTest
             interpreter.Run();
             Assert.Equal(expectedOutput, interpreter.Output);
         }
+
+        [Fact]
+        public void TestSkipInnerLoop()
+        {
+            const string program =
+@"[-]>[-]< initialise les 2 premières cellules mémoire à 0 (en cas de mémoire non initialisée)
+>+++++++[<+++++++>-]< initialise la première cellule mémoire au caractère ASCII '1'
+.>[<.>[-]<.>]";
+            const string expectedOutput = "1";
+            var interpreter = new Interpreter(program);
+            interpreter.Run();
+            Assert.Equal(expectedOutput, interpreter.Output);
+        }
     }
 }
