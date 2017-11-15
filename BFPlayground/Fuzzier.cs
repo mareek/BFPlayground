@@ -1,61 +1,65 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BFPlayground
 {
     class Fuzzier
     {
+        private readonly Random rng = new Random();
+
         public string GenerateProgramWithOuput()
         {
             long tryCount = 0;
             const string allowedInstructions = "<>+-[].";
+            const string weightedAllowedInstructions = "++++++---->>>>>>>>>>>>><<<<<<<<<<[]..";
             const int maxLength = 500;
             var maxProgramDuration = TimeSpan.FromMilliseconds(100);
-            var rng = new Random();
 
-            char GetRandomInstruction() => allowedInstructions[rng.Next(allowedInstructions.Length)];
             var programLength = rng.Next(maxLength);
 
             string program;
             do
             {
                 tryCount++;
-                var programBuilder = new StringBuilder();
-                var unclosedLoopCount = 0;
-                for (int i = 0; i < programLength; i++)
-                {
-                    char instruction;
-
-                    do
-                    {
-                        instruction = GetRandomInstruction();
-                    } while (instruction == ']' && unclosedLoopCount == 0);
-
-                    if (instruction == '[')
-                        unclosedLoopCount++;
-                    else if (instruction == ']')
-                        unclosedLoopCount--;
-
-                    programBuilder.Append(instruction);
-                }
-
-                while (unclosedLoopCount > 0)
-                {
-                    programBuilder.Append(']');
-                    unclosedLoopCount--;
-                }
-
-                program = programBuilder.ToString();
+                program = GenerateProgram(weightedAllowedInstructions.ToCharArray(), programLength);
             } while (!IsProgramExecutableInDefinedTimespan(program, maxProgramDuration, out var output)
-                    || string.IsNullOrEmpty(output));
+                    || !output.Any());
 
             return program;
         }
 
-        private bool IsProgramExecutableInDefinedTimespan(string program, TimeSpan maxDuration, out string output)
+        private string GenerateProgram(char[] instructionPool, int programLength)
+        {
+            var programBuilder = new StringBuilder();
+            var unclosedLoopCount = 0;
+            for (int i = 0; i < programLength; i++)
+            {
+                char instruction;
+
+                do
+                {
+                    instruction = instructionPool[rng.Next(instructionPool.Length)];
+                } while (instruction == ']' && unclosedLoopCount == 0);
+
+                if (instruction == '[')
+                    unclosedLoopCount++;
+                else if (instruction == ']')
+                    unclosedLoopCount--;
+
+                programBuilder.Append(instruction);
+            }
+
+            while (unclosedLoopCount > 0)
+            {
+                programBuilder.Append(']');
+                unclosedLoopCount--;
+            }
+
+            return programBuilder.ToString();
+        }
+
+        private bool IsProgramExecutableInDefinedTimespan(string program, TimeSpan maxDuration, out byte[] output)
         {
             try
             {
@@ -66,10 +70,9 @@ namespace BFPlayground
                     interpreter.Step();
                 }
 
-                output = interpreter.Output;
+                output = interpreter.BinaryOutput;
 
                 return interpreter.EndOfProgram;
-
             }
             catch
             {

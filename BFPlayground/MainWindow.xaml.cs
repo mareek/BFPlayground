@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace BFPlayground
 {
@@ -73,6 +76,51 @@ namespace BFPlayground
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
             CodeTextBox.Text = new Fuzzier().GenerateProgramWithOuput();
+        }
+
+        private void GenerateCorpus_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new SaveFileDialog
+            {
+                Title = "Save program corpus",
+                FileName = "program corpus.txt",
+                Filter = "text file|*.txt"
+            };
+
+            if (fileDialog.ShowDialog(this) ?? false)
+            {
+                var corpus = GenerateProgramCorpus(100);
+                var fileContent = Encoding.UTF8.GetBytes(corpus);
+
+                using (var fileStream = fileDialog.OpenFile())
+                {
+                    fileStream.Write(fileContent, 0, fileContent.Length);
+                }
+            }
+        }
+
+        private string GenerateProgramCorpus(int nbPrograms)
+        {
+            var fuzzier = new Fuzzier();
+            var resultBuilder = new StringBuilder();
+            for (int i = 1; i <= nbPrograms; i++)
+            {
+                var program = fuzzier.GenerateProgramWithOuput();
+                var output = GetProgramOutput(program);
+                var title = $"Program n°{i:000} - length : {program.Length} - output : [ {string.Join(", ", output)} ]";
+                resultBuilder.AppendLine(title);
+                resultBuilder.AppendLine(program);
+                resultBuilder.AppendLine(Convert.ToBase64String(output));
+            }
+
+            return resultBuilder.ToString();
+        }
+
+        private static byte[] GetProgramOutput(string program)
+        {
+            var interpreter = new Interpreter(program);
+            interpreter.Run();
+            return interpreter.BinaryOutput;
         }
     }
 }

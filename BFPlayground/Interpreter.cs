@@ -24,6 +24,7 @@ namespace BFPlayground
         public int DataPointer { get; private set; } = 0;
 
         private readonly List<byte> _output = new List<byte>();
+        public byte[] BinaryOutput => _output.ToArray();
         public string Output => new string(Encoding.UTF8.GetChars(_output.ToArray()));
 
         private readonly Stack<int> _lastOpeningBrackets = new Stack<int>();
