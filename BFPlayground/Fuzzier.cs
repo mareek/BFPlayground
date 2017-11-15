@@ -10,7 +10,6 @@ namespace BFPlayground
 
         public string GenerateProgramWithOuput()
         {
-            long tryCount = 0;
             const string weightedAllowedInstructions = "++++++---->>>>>>>>>>>>><<<<<<<<<<[]..";
             const int maxLength = 500;
             var maxProgramDuration = TimeSpan.FromMilliseconds(100);
@@ -20,7 +19,6 @@ namespace BFPlayground
             string program;
             do
             {
-                tryCount++;
                 program = GenerateProgram(weightedAllowedInstructions.ToCharArray(), programLength);
             } while (!IsProgramExecutableInDefinedTimespan(program, maxProgramDuration, out var output)
                     || !output.Any());

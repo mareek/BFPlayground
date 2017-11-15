@@ -90,11 +90,11 @@ namespace BFPlayground
             if (fileDialog.ShowDialog(this) ?? false)
             {
                 var corpus = GenerateProgramCorpus(100);
-                var fileContent = Encoding.UTF8.GetBytes(corpus);
 
                 using (var fileStream = fileDialog.OpenFile())
+                using (var streamWriter = new StreamWriter(fileStream))
                 {
-                    fileStream.Write(fileContent, 0, fileContent.Length);
+                    streamWriter.Write(corpus);
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace BFPlayground
             {
                 var program = fuzzier.GenerateProgramWithOuput();
                 var output = GetProgramOutput(program);
-                var title = $"Program n°{i:000} - length : {program.Length} - output : [ {string.Join(", ", output)} ]";
+                var title = $"Program n°{i:000} - length : {program.Length} - output : [{string.Join(", ", output)}]";
                 resultBuilder.AppendLine(title);
                 resultBuilder.AppendLine(program);
                 resultBuilder.AppendLine(Convert.ToBase64String(output));
