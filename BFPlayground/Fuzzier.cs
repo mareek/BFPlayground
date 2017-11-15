@@ -11,7 +11,6 @@ namespace BFPlayground
         public string GenerateProgramWithOuput()
         {
             long tryCount = 0;
-            const string allowedInstructions = "<>+-[].";
             const string weightedAllowedInstructions = "++++++---->>>>>>>>>>>>><<<<<<<<<<[]..";
             const int maxLength = 500;
             var maxProgramDuration = TimeSpan.FromMilliseconds(100);

@@ -42,7 +42,7 @@ namespace BFPlaygroundTest
 
         [Theory]
         [MemberData(nameof(GetReferenceData))]
-        public void AllProgramProduceExpectedOutput(string title, string program, byte[] binaryOutput)
+        public void TestGoldMasterCorpus(string title, string program, byte[] binaryOutput)
         {
             var interpreter = new Interpreter(program);
             var deadline = DateTime.Now.Add(ProgramMaxDuration);
