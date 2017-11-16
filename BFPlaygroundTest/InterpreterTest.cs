@@ -60,5 +60,17 @@ namespace BFPlaygroundTest
             interpreter.Run();
             Assert.Equal(expectedOutput, interpreter.Output);
         }
+
+        [Fact]
+        public void TestHelloWorld()
+        {
+            const string program =
+@">++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>
+>+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++.";
+            const string expectedOutput = "Hello World!\n";
+            var interpreter = new Interpreter(program);
+            interpreter.Run();
+            Assert.Equal(expectedOutput, interpreter.Output);
+        }
     }
 }

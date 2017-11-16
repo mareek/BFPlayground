@@ -45,18 +45,19 @@ namespace BFPlayground
                     tempTranslationTable.Add(i);
                 }
             }
+
             _code = tempCode.ToArray();
             _translationTable = tempTranslationTable.ToArray();
-            _jumpTable = new int[_code.Length];
-            InitJumpTable();
+            _jumpTable = CreateJumpTable(_code);
         }
 
-        private void InitJumpTable()
+        private int[] CreateJumpTable(char[] code)
         {
+            var jumpTable = new int[code.Length];
             var openingBrackets = new Stack<int>();
-            for (int i = 0; i < _code.Length; i++)
+            for (int i = 0; i < code.Length; i++)
             {
-                var instruction = _code[i];
+                var instruction = code[i];
                 if (instruction == '[')
                 {
                     openingBrackets.Push(i);
@@ -64,10 +65,12 @@ namespace BFPlayground
                 else if (instruction == ']')
                 {
                     var matchingBracket = openingBrackets.Pop();
-                    _jumpTable[i] = matchingBracket;
-                    _jumpTable[matchingBracket] = i;
+                    jumpTable[i] = matchingBracket;
+                    jumpTable[matchingBracket] = i;
                 }
             }
+
+            return jumpTable;
         }
 
         private static void CheckProgram(string program)
@@ -92,12 +95,10 @@ namespace BFPlayground
             }
         }
 
-        public string Run()
+        public void Run()
         {
             while (!EndOfProgram)
                 Step();
-
-            return Output;
         }
 
         public void Step()
