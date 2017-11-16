@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BFPlayground;
-using Xunit;
+﻿using BFPlayground;
 using NFluent;
+using Xunit;
 
 namespace BFPlaygroundTest
 {
@@ -35,39 +30,17 @@ namespace BFPlaygroundTest
             Check.That(interpreter.DataPointer).IsEqualTo(0);
         }
 
-        [Fact]
-        public void TestInnerLoop()
-        {
-            const string program =
-@"[-]>[-]< initialise les 2 premières cellules mémoire à 0 (en cas de mémoire non initialisée)
->+++++++[<+++++++>-]< initialise la première cellule mémoire au caractère ASCII '1'
->>+++[<<.+>>-<+[-]>]";
-            const string expectedOutput = "123";
-            var interpreter = new Interpreter(program);
-            interpreter.Run();
-            Assert.Equal(expectedOutput, interpreter.Output);
-        }
-
-        [Fact]
-        public void TestSkipInnerLoop()
-        {
-            const string program =
-@"[-]>[-]< initialise les 2 premières cellules mémoire à 0 (en cas de mémoire non initialisée)
->+++++++[<+++++++>-]< initialise la première cellule mémoire au caractère ASCII '1'
-.>[<.>[-]<.>]";
-            const string expectedOutput = "1";
-            var interpreter = new Interpreter(program);
-            interpreter.Run();
-            Assert.Equal(expectedOutput, interpreter.Output);
-        }
-
-        [Fact]
-        public void TestHelloWorld()
-        {
-            const string program =
+        private const string ProgramHelloWorld =
 @">++++++++[<+++++++++>-]<.>>+>+>++>[-]+<[>[->+<<++++>]<<]>.+++++++..+++.>
 >+++++++.<<<[[-]<[-]>]<+++++++++++++++.>>.+++.------.--------.>>+.>++++.";
-            const string expectedOutput = "Hello World!\n";
+
+        [Theory]
+        [InlineData("Hello world", ProgramHelloWorld, "Hello World!\n")]
+        [InlineData("Inner loop", "[-]>[-]<>+++++++[<+++++++>-]<>>+++[<<.+>>-<+[-]>]", "123")]
+        [InlineData("Skipped inner loop", "[-]>[-]<>+++++++[<+++++++>-]<.>[<.>[-]<.>]", "1")]
+        public void TestProgramOutput(string title, string program, string expectedOutput)
+        {
+            Assert.NotEmpty(title);
             var interpreter = new Interpreter(program);
             interpreter.Run();
             Assert.Equal(expectedOutput, interpreter.Output);
