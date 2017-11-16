@@ -22,18 +22,12 @@ namespace BFPlaygroundTest
                 {
                     var line = fileStream.ReadLine();
 
-                    switch (lineNumber % 3)
-                    {
-                        case 0:
-                            title = line;
-                            break;
-                        case 1:
-                            program = line;
-                            break;
-                        case 2:
-                            yield return new object[] { title, program, Convert.FromBase64String(line) };
-                            break;
-                    }
+                    if (lineNumber % 3 ==0)
+                        title = line;
+                    else if (lineNumber % 3 == 1)
+                        program = line;
+                    else
+                        yield return new object[] { title, program, Convert.FromBase64String(line) };
 
                     lineNumber++;
                 }

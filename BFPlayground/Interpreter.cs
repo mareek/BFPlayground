@@ -9,6 +9,7 @@ namespace BFPlayground
     public class Interpreter
     {
         private const string instructions = "<>+-[].,";
+
         public string Program { get; }
         public int ProgramPointer => _translationTable[_codePointer];
 
@@ -27,7 +28,7 @@ namespace BFPlayground
         public byte[] BinaryOutput => _output.ToArray();
         public string Output => new string(Encoding.UTF8.GetChars(_output.ToArray()));
 
-        private readonly Stack<int> _lastOpeningBrackets = new Stack<int>();
+        private readonly int[] _jumpTable;
 
         public Interpreter(string program)
         {
@@ -46,6 +47,27 @@ namespace BFPlayground
             }
             _code = tempCode.ToArray();
             _translationTable = tempTranslationTable.ToArray();
+            _jumpTable = new int[_code.Length];
+            InitJumpTable();
+        }
+
+        private void InitJumpTable()
+        {
+            var openingBrackets = new Stack<int>();
+            for (int i = 0; i < _code.Length; i++)
+            {
+                var instruction = _code[i];
+                if (instruction == '[')
+                {
+                    openingBrackets.Push(i);
+                }
+                else if (instruction == ']')
+                {
+                    var matchingBracket = openingBrackets.Pop();
+                    _jumpTable[i] = matchingBracket;
+                    _jumpTable[matchingBracket] = i;
+                }
+            }
         }
 
         private static void CheckProgram(string program)
@@ -110,6 +132,7 @@ namespace BFPlayground
                     PrintOutput();
                     break;
             }
+
             _codePointer++;
         }
 
@@ -140,32 +163,14 @@ namespace BFPlayground
 
         private void ProcessOpeningBracket()
         {
-            if (_data[DataPointer] != 0)
-            {
-                _lastOpeningBrackets.Push(_codePointer);
-            }
-            else
-            {
-                var innerLoopCount = 0;
-                _codePointer++;
-                while (_code[_codePointer] != ']' || innerLoopCount > 0)
-                {
-                    if (_code[_codePointer] == ']')
-                        innerLoopCount--;
-                    else if (_code[_codePointer] == '[')
-                        innerLoopCount++;
-
-                    _codePointer++;
-                }
-            }
+            if (_data[DataPointer] == 0)
+                _codePointer = _jumpTable[_codePointer];
         }
 
         private void ProcessClosingBracket()
         {
             if (_data[DataPointer] != 0)
-                _codePointer = _lastOpeningBrackets.Peek();
-            else
-                _lastOpeningBrackets.Pop();
+                _codePointer = _jumpTable[_codePointer];
         }
 
         private void GetInput()
