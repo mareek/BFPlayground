@@ -9,7 +9,6 @@ namespace BFPlaygroundTest
 {
     public class GoldMasterTest
     {
-        private static readonly TimeSpan ProgramMaxDuration = TimeSpan.FromMilliseconds(500);
         public static IEnumerable<object[]> GetReferenceData()
         {
             using (var fileStream = File.OpenText("Resources\\program corpus.txt"))
@@ -22,7 +21,7 @@ namespace BFPlaygroundTest
                 {
                     var line = fileStream.ReadLine();
 
-                    if (lineNumber % 3 ==0)
+                    if (lineNumber % 3 == 0)
                         title = line;
                     else if (lineNumber % 3 == 1)
                         program = line;
@@ -36,15 +35,15 @@ namespace BFPlaygroundTest
 
         [Theory]
         [MemberData(nameof(GetReferenceData))]
-        public void TestGoldMasterCorpus(string title, string program, byte[] binaryOutput)
+        public void TestGoldMasterCorpus(string title, string program, byte[] expectedBinaryOutput)
         {
             var interpreter = new Interpreter(program);
-            var deadline = DateTime.Now.Add(ProgramMaxDuration);
+            var deadline = DateTime.Now.Add(TimeSpan.FromMilliseconds(500));
             while (!interpreter.EndOfProgram && DateTime.Now < deadline)
                 interpreter.Step();
 
             Assert.True(interpreter.EndOfProgram, $"The program didn't finished execution in the allocated time : {title}");
-            Check.That(interpreter.BinaryOutput).ContainsExactly(binaryOutput);
+            Check.That(interpreter.BinaryOutput).ContainsExactly(expectedBinaryOutput);
         }
     }
 }
