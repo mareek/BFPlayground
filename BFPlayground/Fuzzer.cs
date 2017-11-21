@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BFPlayground
 {
-    class Fuzzier
+    class Fuzzer
     {
         private readonly Random rng = new Random();
 

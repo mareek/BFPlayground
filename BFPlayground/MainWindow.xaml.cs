@@ -75,7 +75,7 @@ namespace BFPlayground
 
         private void Generate_Click(object sender, RoutedEventArgs e)
         {
-            CodeTextBox.Text = new Fuzzier().GenerateProgramWithOuput();
+            CodeTextBox.Text = new Fuzzer().GenerateProgramWithOuput();
         }
 
         private void GenerateCorpus_Click(object sender, RoutedEventArgs e)
@@ -101,7 +101,7 @@ namespace BFPlayground
 
         private string GenerateProgramCorpus(int nbPrograms)
         {
-            var fuzzier = new Fuzzier();
+            var fuzzier = new Fuzzer();
             var resultBuilder = new StringBuilder();
             for (int i = 1; i <= nbPrograms; i++)
             {
